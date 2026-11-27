@@ -1,0 +1,40 @@
+# Python bytecode and test caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments and local tooling
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+
+# Build and packaging artifacts
+build/
+dist/
+*.spec.bak
+
+# Local configuration, logs and diagnostics
+config.json
+*.log
+*.tmp
+*.bak
+*.dmp
+ui-smoke*.png
+validation/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local environment override used by tests
+.autoclicker-config/
