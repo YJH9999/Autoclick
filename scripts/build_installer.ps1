@@ -1,7 +1,9 @@
 [CmdletBinding()]
 param(
     [switch]$SkipTests,
-    [string]$IsccPath
+    [string]$IsccPath,
+    [string]$CertificateThumbprint,
+    [string]$SignToolPath
 )
 
 $ErrorActionPreference = "Stop"
@@ -16,6 +18,13 @@ $Version = $VersionMatch.Matches[0].Groups[1].Value
 if ($LASTEXITCODE -ne 0) { throw "Application build failed." }
 if (-not (Test-Path "dist\AutoClicker\AutoClicker.exe")) { throw "Main executable is missing." }
 if (-not (Test-Path "dist\AutoClicker\_internal")) { throw "The modular _internal directory is missing." }
+
+if ($CertificateThumbprint) {
+    $SignParameters = @{ Path = "dist\AutoClicker\AutoClicker.exe"; CertificateThumbprint = $CertificateThumbprint }
+    if ($SignToolPath) { $SignParameters.SignToolPath = $SignToolPath }
+    & (Join-Path $PSScriptRoot "sign_file.ps1") @SignParameters
+    if ($LASTEXITCODE -ne 0) { throw "Application signing failed." }
+}
 
 if (-not $IsccPath) {
     $Candidates = @(
@@ -35,6 +44,13 @@ if ($LASTEXITCODE -ne 0) { throw "Inno Setup compilation failed." }
 $SetupName = "AutoClicker-$Version-Windows-Setup.exe"
 $SetupPath = Join-Path $Root "dist\installer\$SetupName"
 if (-not (Test-Path $SetupPath)) { throw "Installer was not generated: $SetupPath" }
+
+if ($CertificateThumbprint) {
+    $SignParameters = @{ Path = $SetupPath; CertificateThumbprint = $CertificateThumbprint }
+    if ($SignToolPath) { $SignParameters.SignToolPath = $SignToolPath }
+    & (Join-Path $PSScriptRoot "sign_file.ps1") @SignParameters
+    if ($LASTEXITCODE -ne 0) { throw "Installer signing failed." }
+}
 
 $Hash = (Get-FileHash -Algorithm SHA256 $SetupPath).Hash.ToLowerInvariant()
 $ChecksumPath = Join-Path $Root "dist\installer\SHA256SUMS.txt"

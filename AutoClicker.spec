@@ -22,6 +22,13 @@ analysis = Analysis(
     hiddenimports=hiddenimports, hookspath=[], hooksconfig={}, runtime_hooks=[],
     excludes=[], noarchive=False, optimize=0,
 )
+# Windows 10/11 already provides these system API-set DLLs. Shipping private
+# copies creates dozens of unnecessary writes to files with system-like names
+# and can trigger antivirus heuristics. Keep all application-specific runtimes.
+analysis.binaries = [
+    item for item in analysis.binaries
+    if not item[0].lower().startswith("api-ms-win-")
+]
 pyz = PYZ(analysis.pure)
 executable = EXE(
     pyz, analysis.scripts,

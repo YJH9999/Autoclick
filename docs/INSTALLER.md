@@ -45,7 +45,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\build_installer.ps1
 脚本会创建 `.venv`、安装依赖、执行测试、构建文件夹版并编译安装器。输出：
 
 ```text
-dist/installer/AutoClicker-5.0.0-Windows-Setup.exe
+dist/installer/AutoClicker-5.0.1-Windows-Setup.exe
 dist/installer/SHA256SUMS.txt
 ```
 
@@ -66,7 +66,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\build_installer.ps1 -SkipTest
 安装器也保留 Inno Setup 标准命令行能力，便于测试：
 
 ```powershell
-.\AutoClicker-5.0.0-Windows-Setup.exe /VERYSILENT /NORESTART /DIR="D:\Apps\AutoClicker" /TASKS="desktopicon,startmenuicon"
+.\AutoClicker-5.0.1-Windows-Setup.exe /VERYSILENT /NORESTART /DIR="D:\Apps\AutoClicker" /TASKS="desktopicon,startmenuicon"
 ```
 
 生产发布建议使用图形化向导，不向普通用户宣传静默安装。
@@ -74,3 +74,15 @@ powershell -ExecutionPolicy Bypass -File .\scripts\build_installer.ps1 -SkipTest
 ## 签名说明
 
 仓库不包含证书或签名密钥。未签名安装器可能触发 Windows SmartScreen，这是当前已知发布限制。正式分发时可使用受信任代码签名证书，对主 EXE 和安装器签名，并将签名步骤接入本地安全构建流程；不要把证书、密码或令牌提交到仓库。
+
+已安装 Windows SDK、证书已导入 Windows 证书存储时，可在构建命令中提供证书 SHA-1 指纹：
+
+```powershell
+.\scripts\build_installer.ps1 `
+  -CertificateThumbprint "证书指纹" `
+  -SignToolPath "C:\Program Files (x86)\Windows Kits\10\bin\...\x64\signtool.exe"
+```
+
+构建脚本会使用 SHA-256 文件摘要、RFC 3161 时间戳分别签名主 EXE 和安装器，并在生成校验和前调用 `signtool verify /pa` 验证。也可以单独运行 `scripts/sign_file.ps1`。
+
+签名不能替代安全测试，也不能保证所有安全软件永不提示；浏览器下载信誉还会受发布历史和下载量影响。

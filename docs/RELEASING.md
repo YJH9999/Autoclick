@@ -7,8 +7,8 @@
 3. 创建与源码版本一致的标签并推送：
 
 ```powershell
-git tag -a v5.0.0 -m "AutoClicker 5.0.0"
-git push origin v5.0.0
+git tag -a v5.0.1 -m "AutoClicker 5.0.1"
+git push origin v5.0.1
 ```
 
 `.github/workflows/release.yml` 会在 Windows Runner 上安装 Inno Setup、运行测试、构建安装器、生成 SHA-256 并创建 Release。Release 包含：
@@ -30,11 +30,11 @@ gh auth login --hostname github.com --git-protocol https --web
 本地构建安装器后：
 
 ```powershell
-gh release create v5.0.0 `
-  "dist/installer/AutoClicker-5.0.0-Windows-Setup.exe" `
+gh release create v5.0.1 `
+  "dist/installer/AutoClicker-5.0.1-Windows-Setup.exe" `
   "dist/installer/SHA256SUMS.txt" `
   --repo YJH9999/Autoclick `
-  --title "AutoClicker 5.0.0" `
+  --title "AutoClicker 5.0.1" `
   --generate-notes
 ```
 

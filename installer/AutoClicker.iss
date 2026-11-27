@@ -1,7 +1,7 @@
 ; AutoClicker Windows installer (Inno Setup 6.5+)
 ; Build from repository root with scripts/build_installer.ps1.
 #ifndef MyAppVersion
-  #define MyAppVersion "5.0.0"
+  #define MyAppVersion "5.0.1"
 #endif
 
 #define MyAppName "AutoClicker"
