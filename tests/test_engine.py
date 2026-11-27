@@ -65,7 +65,9 @@ class ClickEngineTests(unittest.TestCase):
         self.assertEqual(engine.count, count)
         self.assertTrue(engine.paused)
         engine.resume()
-        time.sleep(0.03)
+        resume_deadline = time.monotonic() + 1.0
+        while engine.count == count and time.monotonic() < resume_deadline:
+            time.sleep(0.01)
         self.assertGreater(engine.count, count)
         self.assertFalse(engine.paused)
         engine.pause()
