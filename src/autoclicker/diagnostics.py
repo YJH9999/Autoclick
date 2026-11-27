@@ -31,19 +31,19 @@ def self_test() -> bool:
         while engine.running and time.monotonic() < deadline:
             time.sleep(0.01)
         assert not engine.running and engine.count == 3 and mouse.clicks == 3
-        checks.append("点击引擎与次数限制")
+        checks.append("Click engine and operation limit")
         validate_hotkeys(DEFAULT_HOTKEYS)
-        checks.append("热键配置校验")
+        checks.append("Hotkey validation")
         with tempfile.TemporaryDirectory() as directory:
             store = ConfigStore(Path(directory) / "config.json")
             store.save(dict(DEFAULT_CONFIG))
             loaded, warning = store.load()
             assert not warning and loaded["interval_ms"] == 100
-        checks.append("配置原子保存与读取")
+        checks.append("Atomic configuration save and load")
     except Exception as exc:
-        print(f"自检失败：{exc}")
+        print(f"Self-test failed: {ascii(exc)}")
         return False
     for name in checks:
-        print(f"通过：{name}")
-    print("核心自检全部通过；测试未移动真实鼠标。")
+        print(f"PASS: {name}")
+    print("All core self-tests passed; no real mouse input was generated.")
     return True
